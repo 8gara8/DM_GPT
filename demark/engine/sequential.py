@@ -30,7 +30,7 @@ def _qualifies_setup(close_now: float, close_4_back: float, direction: str) -> b
 
 def calculate_td_sequential(df: pd.DataFrame) -> SequentialResult:
     result = SequentialResult()
-    if len(df) < 15:
+    if len(df) < 13:
         return result
 
     df = df.reset_index(drop=False).rename(columns={df.index.name or "index": "Date"})
@@ -55,6 +55,15 @@ def calculate_td_sequential(df: pd.DataFrame) -> SequentialResult:
             else:
                 setup_count[direction] = 0
                 setup_start[direction] = None
+
+            if 0 < setup_count[direction] < 9:
+                result.direction = direction
+                result.phase = "setup"
+                result.setup_count = setup_count[direction]
+                result.setup_start_idx = setup_start[direction]
+                result.setup_completed_idx = None
+                result.setup_perfected = False
+                result.status = f"{direction.title()} Setup {setup_count[direction]} of 9"
 
             if setup_count[direction] == 9:
                 start_idx = setup_start[direction]

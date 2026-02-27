@@ -37,6 +37,23 @@ def test_countdown_progresses_non_consecutive():
     assert res.phase in {"setup", "countdown", "none"}
 
 
+def test_minimum_history_allows_setup_detection():
+    closes = [20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8]
+    df = _df_from_close(closes)
+    res = calculate_td_sequential(df)
+    assert any(e["type"] == "setup_complete" and e["direction"] == "buy" for e in res.events)
+
+
+def test_setup_progress_reported_before_bar_9():
+    closes = [20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9]
+    df = _df_from_close(closes)
+    res = calculate_td_sequential(df)
+    assert res.phase == "setup"
+    assert res.direction == "buy"
+    assert res.setup_count == 8
+    assert res.status == "Buy Setup 8 of 9"
+
+
 def test_short_history_returns_no_signal():
     df = _df_from_close([1, 2, 3, 4, 5])
     res = calculate_td_sequential(df)
