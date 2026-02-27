@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "demark-monitor"
+version = "0.1.0"
+description = "DeMark Indicators daily monitor"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "click>=8.1",
+  "flask>=3.0",
+  "pandas>=2.0",
+  "pyyaml>=6.0",
+  "yfinance>=0.2.40",
+]
+
+[project.scripts]
+demark = "demark.cli:cli"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
